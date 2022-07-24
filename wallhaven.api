@@ -6,7 +6,7 @@ read Pur <<< $(echo -e "sfw\nsketchy\nnsfw" | dmenu -i -p "Purity")
 read Pages <<< $(echo "" | dmenu -p "how many pages do you want:")
 
 wall_dir="/home/varutozz/pix/"
-apikey="XZyNpMmqIBciTGv73qhyzotZlO7w8YTJ"
+apikey="Your api key" #(Only required for nsfw).
 
 if [[ $Cate == "general" ]];then Cate=100;elif [[ $Cate == "anime" ]];then Cate=010;else Cate=001; fi 
 
