@@ -1,0 +1,43 @@
+#!/bin/bash
+
+read Query <<< $(echo "" | dmenu -i -p "Enter your query:")
+read Cate <<< $(echo -e "general\nanime\npeople" | dmenu -i -p "Categories:")
+read Pur <<< $(echo -e "sfw\nsketchy\nnsfw" | dmenu -i -p "Purity")
+read Pages <<< $(echo "" | dmenu -p "how many pages do you want:")
+
+wall_dir="/home/varutozz/pix/"
+apikey="XZyNpMmqIBciTGv73qhyzotZlO7w8YTJ"
+
+if [[ $Cate == "general" ]];then Cate=100;elif [[ $Cate == "anime" ]];then Cate=010;else Cate=001; fi 
+
+if [[ $Pur == "sfw" ]];then Pur=100;elif [[ $Pur == "sketchy" ]];then Pur=010;else Pur=001; fi 
+
+for (( i=1; i<=$Pages; i++ ))
+do
+	if [[ $Pur == 001 ]]; 
+	then
+		wall=$(curl  -s -H "X-API-KEY:$apikey" -G https://wallhaven.cc/api/v1/search?\
+			 -d "q=$Query"\
+			  -d "categories=$Cate"\
+			    -d "purity=$Pur"\
+				-d "atleast=1920x1080"\
+				  -d "page=$i" | jq | grep path | cut -d\" -f4   )
+	else
+		wall=$(curl  -s -G https://wallhaven.cc/api/v1/search?\
+			 -d "q=$Query"\
+			  -d "categories=$Cate"\
+			   -d "purity=$Pur"\
+			     -d "atleast=1920x1080"\
+			       -d "page=$i" | jq | grep path | cut -d\" -f4   )
+		
+
+	fi
+	cd $wall_dir
+	for j in $wall 
+	do
+		curl  -s -O $j  
+	done
+
+done
+
+notify-send --app-name="Wallhaven"  "Wallpaper downlaoded"
